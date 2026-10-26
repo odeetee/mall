@@ -1,28 +1,17 @@
 <template>
   <div>
-  <div class="toolbar">
-    <input v-model.lazy.trim="query" @keyup.enter="doSearch" placeholder="搜索商品" />
-    <select v-model="category">
-      <option v-for="c in categories" :key="c" :value="c">
-        {{ c === 'all' ? '全部分类' : c }}
-      </option>
-    </select>
-
-    <label>
-      价格上限
-      <input v-model.number="priceMax" type="range" min="0" max="300" step="10" />
-      <span>{{ priceMax === Infinity || priceMax >= 300 ? '不限' : `¥${priceMax}` }}</span>
-    </label>
-
-    <label>
-      <input v-model="desc" type="checkbox" />
-      价格降序
-    </label>
-  </div>
-
+<SearchBar
+  v-model:keyword="keyword"
+  v-model:category="category"
+  v-model:price-max="priceMax"
+  v-model:desc="desc"
+  :categories="categories"
+  :cart-count="cartCount"
+  @search="onSearch"
+  @reset="onReset"
+/>
   <p v-show="query">共 {{ sorted.length }} 件商品</p>
-  <p>购物车有：{{ cartCount }} 件商品</p>
-
+  
 <div class="product-list">
   <ProductCard
   v-for="p in sorted"
@@ -41,6 +30,7 @@
 import { ref, watch } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 import { useProductFilter } from '@/composables/useProductFilter'
+import SearchBar from '@/components/SearchBar.vue'
 
 const cartCount = ref(0)
 
@@ -55,35 +45,31 @@ const products = ref([
 ])
 
 // 解构拿到所有状态
-const { query, category, priceMax, desc, categories, sorted, doSearch } = useProductFilter(products)
+const { query:keyword, category, priceMax, desc, categories, sorted, doSearch } = useProductFilter(products)
 
 // 新增：卡片选中id
 const selectedId = ref(null)
 
+// 页面加载回填草稿
+keyword.value = localStorage.getItem('kw') || ''
+
 // 草稿保存：query存入localStorage
-watch(query, (newVal) => {
+watch(keyword, (newVal) => {
   localStorage.setItem('kw', newVal)
 }, { immediate: true })
-
-// 页面加载回填草稿
-query.value = localStorage.getItem('kw') || ''
-
+// 补充两个事件处理函数（onSearch、onReset）
+function onSearch(kw) {
+  doSearch(kw)
+}
+function onReset() {
+  keyword.value = ''
+}
 function addToCart() {
   cartCount.value++
 }
 </script>
 
 <style scoped>
-.toolbar {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 16px;
-}
-.toolbar select,
-.toolbar input[type='text'] {
-  padding: 6px 10px;
-}
 .product-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
