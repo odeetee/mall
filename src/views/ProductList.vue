@@ -1,7 +1,7 @@
 <template>
   <div>
 <SearchBar
-  v-model:keyword="keyword"
+  v-model:keyword="query"
   v-model:category="category"
   v-model:price-max="priceMax"
   v-model:desc="desc"
@@ -45,16 +45,16 @@ const products = ref([
 ])
 
 // 解构拿到所有状态
-const { query:keyword, category, priceMax, desc, categories, sorted, doSearch } = useProductFilter(products)
+const { query, search, category, priceMax, desc, categories, sorted, doSearch } = useProductFilter(products)
 
 // 新增：卡片选中id
 const selectedId = ref(null)
 
 // 页面加载回填草稿
-keyword.value = localStorage.getItem('kw') || ''
+query.value = localStorage.getItem('kw') || ''
 
 // 草稿保存：query存入localStorage
-watch(keyword, (newVal) => {
+watch(query, (newVal) => {
   localStorage.setItem('kw', newVal)
 }, { immediate: true })
 // 补充两个事件处理函数（onSearch、onReset）
@@ -62,7 +62,13 @@ function onSearch(kw) {
   doSearch(kw)
 }
 function onReset() {
-  keyword.value = ''
+  // 这里是业务状态重置！重点多了 search.value = ''
+  query.value = ''
+  search.value = ''   // 关键！useProductFilter里真正拿来过滤的变量
+  category.value = 'all'
+  priceMax.value = Infinity
+  desc.value = false
+  localStorage.removeItem('kw')
 }
 function addToCart() {
   cartCount.value++
