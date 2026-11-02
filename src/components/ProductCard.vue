@@ -6,13 +6,25 @@ const props = defineProps({
 })
 </script>
 
+<!-- 第七周案例三：局部自定义指令 v-focus -->
 <template>
-  <!-- template根div -->
   <div class="product-card" :class="{active: selected}">
-    <img :src="goods.img" :alt="goods.name" width="200px" height="200px"  />
-    <h3>{{ goods.name }}</h3>
+    <!-- cover 具名插槽：图片区域，给默认图片 -->
+    <slot name="cover">
+      <img :src="goods.img" :alt="goods.name" width="200px" height="200px" />
+    </slot>
+
+    <!-- title 具名插槽：商品标题区域 -->
+    <slot name="title">
+      <h3>{{ goods.name }}</h3>
+    </slot>
+
     <p class="price">¥{{ goods.price }}</p>
-    <span :class="goods.stock > 0 ? 'on' : ''">{{ goods.stock > 0 ? '现货' : '缺货' }}</span>
+
+    <!-- 默认插槽：底部区域 -->
+    <slot>
+      <span>{{ goods.stock > 0 ? '现货' : '缺货' }}</span>
+    </slot>
   </div>
 </template>
 

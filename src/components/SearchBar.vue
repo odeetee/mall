@@ -1,6 +1,6 @@
 <template>
 <div class="toolbar">
-    <input v-model.lazy.trim="keyword" @keyup.enter="doSearch" placeholder="搜索商品" />
+    <input v-focus v-model.lazy.trim="keyword" @keyup.enter="doSearch" placeholder="搜索商品" />
     <button class="btn-search" @click="doSearch">搜索</button>
     <button class="btn-reset" @click="doReset">清空</button>
     <select v-model="category">
@@ -46,6 +46,14 @@ function doSearch() {
 // 4. 重置：点重置按钮
 function doReset() {
   emit('reset')
+}
+// 第七周案例三：局部自定义指令 v-focus
+// 新增：局部自定义指令 v-focus
+const vFocus = {
+  mounted(el) {
+    // 挂载的时候，让输入框自动聚焦
+    el.focus()
+  }
 }
 </script>
 

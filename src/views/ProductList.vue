@@ -10,17 +10,26 @@
   @search="onSearch"
   @reset="onReset"
 />
+<!-- 第七周案例三：局部自定义指令 v-focus -->
+ <!-- 视图切换按钮，用来切换网格/列表 -->
+    <div class="view-switch">
+      <button @click="viewType = ProductGrid">网格视图</button>
+      <button @click="viewType = ProductRow">列表视图</button>
+    </div>
+
   <p v-show="query">共 {{ sorted.length }} 件商品</p>
-  
-<div class="product-list">
-  <ProductCard
-  v-for="p in sorted"
-  :key="p.id"
-  :goods="p"
-  :selected="selectedId === p.id"
-  @click="selectedId = p.id"
-/>
-</div>
+
+ <!-- KeepAlive 包裹动态组件，缓存状态验收项 -->
+<KeepAlive>
+  <component
+    :is="viewType"
+    :list="sorted"
+    :selected-id="selectedId"
+    @select="selectedId = $event"
+    
+  >
+  </component>
+</KeepAlive>
 
   <p v-if="sorted.length === 0">没有找到相关产品</p>
   </div>
@@ -31,6 +40,9 @@ import { ref, watch } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 import { useProductFilter } from '@/composables/useProductFilter'
 import SearchBar from '@/components/SearchBar.vue'
+// 导入两个新视图组件
+import ProductGrid from '@/components/ProductGrid.vue'
+import ProductRow from '@/components/ProductRow.vue'
 
 const cartCount = ref(0)
 
@@ -46,6 +58,10 @@ const products = ref([
 
 // 解构拿到所有状态
 const { query, search, category, priceMax, desc, categories, sorted, doSearch } = useProductFilter(products)
+
+// ========== 第七周案例三：动态视图相关 ==========
+// 可选：ProductGrid / ProductRow
+const viewType = ref(ProductGrid)
 
 // 新增：卡片选中id
 const selectedId = ref(null)
@@ -80,5 +96,10 @@ function addToCart() {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap:16px;
+}
+.view-switch {
+  margin: 12px 0;
+  gap: 8px;
+  display: flex;
 }
 </style>
