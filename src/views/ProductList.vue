@@ -26,7 +26,8 @@
     :list="sorted"
     :selected-id="selectedId"
     @select="selectedId = $event"
-    
+    :go-detail="goDetail"
+    :go-detail-props="goDetailProps"
   >
   </component>
 </KeepAlive>
@@ -43,7 +44,9 @@ import SearchBar from '@/components/SearchBar.vue'
 // 导入两个新视图组件
 import ProductGrid from '@/components/ProductGrid.vue'
 import ProductRow from '@/components/ProductRow.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const cartCount = ref(0)
 
 // PPT里带category的商品原始数据
@@ -89,6 +92,16 @@ function onReset() {
 function addToCart() {
   cartCount.value++
 }
+
+// 写法1：编程式，拼路径，跳到 useRoute 版本详情
+function goDetail(goods) {
+  router.push(`/products/${goods.id}`)
+}
+// 写法3：编程式，拼路径，跳到 props 版本详情
+function goDetailProps(goods) {
+  router.push(`/props/${goods.id}`)
+}
+
 </script>
 
 <style scoped>

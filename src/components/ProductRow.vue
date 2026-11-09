@@ -6,7 +6,7 @@
       :key="p.id"
       class="row-item"
       :class="{active: selectedId === p.id}"
-      @click="$emit('select', p.id)"
+      @click="handleClick(p)"
     >
       <!-- 作用域插槽：把当前行商品p传给父组件 -->
       <slot name="row" :row="p">
@@ -17,6 +17,14 @@
           <div>¥{{ p.price }}</div>
         </div>
       </slot>
+      <!-- 新增写法2 router-link -->
+      <router-link :to="{ name: 'detail-props', params: { id: p.id } }">
+        props版详情
+      </router-link>
+      <!-- 新增写法3 按钮，带stop -->
+      <button @click.stop="goDetailProps(p)">
+        push跳props版
+      </button>
     </div>
   </div>
 </template>
@@ -24,9 +32,22 @@
 <script setup>
 const props = defineProps({
   list: { type: Array, required: true },
-  selectedId: { type: [Number, null], default: null }
+  selectedId: { type: [Number, null], default: null },
+  goDetail: {
+    type: Function,
+    required: true
+  },
+  goDetailProps: {
+    type: Function,
+    required: true
+  }
 })
 const emit = defineEmits(['select'])
+// 新增的函数，把两件事放一起
+function handleClick(p) {
+  emit('select', p.id) // 原来的选中高亮
+  goDetail(p)         // 新增的跳转
+}
 </script>
 
 <style scoped>
