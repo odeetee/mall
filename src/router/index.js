@@ -6,6 +6,12 @@ import Cart from '../views/Cart.vue'
 import NotFound from '@/views/NotFound.vue'
 import ProductDetail from '@/views/ProductDetail.vue'
 
+// === 案例3新增导入（这几个是现在要新建的页面）
+import Login from '@/views/Login.vue'
+import AdminLayout from '@/views/AdminLayout.vue'
+import AdminProducts from '@/views/AdminProducts.vue'
+import AdminOrders from '@/views/AdminOrders.vue'
+
 if (!location.hash && location.pathname !== '/' 
 && !/\.html?$/.test(location.pathname)) { 
  history.replaceState(null, '', '/#' + location.pathname) 
@@ -43,6 +49,26 @@ const routes = [
       component: ProductDetailProps,
       props: true
     },
+     // ========== 新增：登录页 ==========
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
+      meta: { guest: true }
+    },
+     // ========== 新增：后台嵌套路由 ==========
+    {
+      path: '/admin',
+      component: AdminLayout,
+      meta: { requiresAuth: true }, // 父路由标记需要登录，子路由继承
+      children: [
+        { path: '', redirect: '/admin/products' },
+        // 子路由path不要加 /
+        { path: 'products', name: 'admin-products', component: AdminProducts },
+        { path: 'orders', name: 'admin-orders', component: AdminOrders }
+    ]
+    },
+     // 404兜底，放在最后
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
@@ -53,6 +79,21 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes: routes
+})
+// ========== 全局前置守卫 ==========
+router.beforeEach((to) => {
+  const token = localStorage.getItem('token')
+
+  // 登录页guest直接放行，防止死循环
+  if (to.meta.guest) return true
+
+  // 需要登录并且没有token → 跳登录，带上from
+  if (to.meta.requiresAuth && !token) {
+    return { path: '/login', query: { from: to.fullPath } }
+  }
+
+  // 其余全部放行
+  return true
 })
 
 export default router
