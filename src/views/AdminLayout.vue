@@ -1,18 +1,25 @@
 <template>
-  <div class="admin">
-    <aside class="side">
+  <el-container class="admin">
+    <!-- 左侧侧边栏 -->
+    <el-aside width="200px" class="side">
       <h3 class="brand">管理后台</h3>
-
-      <!-- 子路由的完整地址是 /admin/products -->
-      <router-link to="/admin/products">商品</router-link>
-      <router-link to="/admin/orders">订单</router-link>
-
+      <!-- el-menu 开启路由模式，自动高亮 -->
+      <el-menu router :default-active="$route.path">
+        <el-menu-item index="/admin/products">商品管理</el-menu-item>
+        <el-menu-item index="/admin/orders">订单管理</el-menu-item>
+      </el-menu>
       <button class="logout" @click="logout">退出登录</button>
-    </aside>
+    </el-aside>
 
-    <!-- 子路由渲染在这里：外壳只写一次，子页面各写各的 -->
-    <router-view />
-  </div>
+    <!-- 右侧区域：头部 + 内容区 -->
+    <el-container>
+      <el-header>微商城后台</el-header>
+      <el-main>
+        <!-- 嵌套路由出口 -->
+        <router-view />
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script setup>

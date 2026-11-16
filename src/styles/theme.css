@@ -1,0 +1,18 @@
+/* 主题定制：覆盖 Element Plus 的 CSS 变量 */
+/* 全局主题色：微商城的绿 */
+:root {
+  --el-color-primary: #2f9e6e;
+  --el-border-radius-base: 6px;
+}
+
+/* 只改某个区域：推荐这种写法，不影响其它页面 */
+.brand-panel {
+  --el-color-primary: #185FA5;
+}
+
+/* 说明：
+ * 1. --el-color-primary 等变量是 Element Plus 官方提供的入口，
+ *    直接覆盖即可，不需要改组件库源码，升级也不受影响。
+ * 2. 深色模式（Element Plus 2.x 内置 dark 主题）也是靠换一组变量实现的。
+ * 3. 只有当变量解决不了时，才考虑用 :deep() 穿透去改内部样式。
+ */
