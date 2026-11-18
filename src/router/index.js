@@ -6,11 +6,14 @@ import Cart from '../views/Cart.vue'
 import NotFound from '@/views/NotFound.vue'
 import ProductDetail from '@/views/ProductDetail.vue'
 
-// === 案例3新增导入（这几个是现在要新建的页面）
+// === 第八周案例3新增导入（这几个是现在要新建的页面）
 import Login from '@/views/Login.vue'
 import AdminLayout from '@/views/AdminLayout.vue'
 import AdminProducts from '@/views/AdminProducts.vue'
 import AdminOrders from '@/views/AdminOrders.vue'
+
+// === 第九周案例2新增导入
+import AdminUser from '@/views/AdminUser.vue'
 
 if (!location.hash && location.pathname !== '/' 
 && !/\.html?$/.test(location.pathname)) { 
@@ -65,7 +68,9 @@ const routes = [
         { path: '', redirect: '/admin/products' },
         // 子路由path不要加 /
         { path: 'products', name: 'admin-products', component: AdminProducts },
-        { path: 'orders', name: 'admin-orders', component: AdminOrders }
+        { path: 'orders', name: 'admin-orders', component: AdminOrders },
+        // 第九周案例2新增  在 AdminLayout 的 children 数组里追加这一条
+        { path: 'users', name: 'admin-users', component: AdminUser },                  
     ]
     },
      // 404兜底，放在最后

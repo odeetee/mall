@@ -1,33 +1,46 @@
 <template>
-  <el-container class="admin">
-    <!-- 左侧侧边栏 -->
-    <el-aside width="200px" class="side">
-      <h3 class="brand">管理后台</h3>
-      <!-- el-menu 开启路由模式，自动高亮 -->
-      <el-menu router :default-active="$route.path">
-        <el-menu-item index="/admin/products">商品管理</el-menu-item>
-        <el-menu-item index="/admin/orders">订单管理</el-menu-item>
-      </el-menu>
-      <button class="logout" @click="logout">退出登录</button>
-    </el-aside>
+<el-container class="admin">
+  <!-- 左侧侧边栏 -->
+  <el-aside width="200px" class="side">
+    <div class="brand">微商城后台</div>
+    <!-- el-menu 开启路由模式，自动高亮 -->
+    <el-menu router :default-active="$route.path" background-color="#F78FA">
+      <el-menu-item index="/admin/products">
+        <el-icon><Goods /></el-icon>
+        商品管理
+      </el-menu-item>
+      <el-menu-item index="/admin/orders">
+        <el-icon><List /></el-icon>
+        订单管理
+      </el-menu-item>
+      <el-menu-item index="/admin/users">
+        <el-icon><User /></el-icon>
+        用户管理
+      </el-menu-item>
+    </el-menu>
+  </el-aside>
 
-    <!-- 右侧区域：头部 + 内容区 -->
-    <el-container>
-      <el-header>微商城后台</el-header>
-      <el-main>
-        <!-- 嵌套路由出口 -->
-        <router-view />
-      </el-main>
-    </el-container>
+  <!-- 右侧区域：头部 + 内容区 -->
+  <el-container>
+    <el-header class="header">
+      <span class="title">微商城后台</span>
+      <el-button type="danger" size="small" @click="logout">退出登录</el-button>
+    </el-header>
+    <el-main class="main">
+      <!-- 嵌套路由出口 -->
+      <router-view />
+    </el-main>
   </el-container>
+</el-container>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
+// 新增：导入三个图标
+import { Goods, List, User } from '@element-plus/icons-vue'
 
 const router = useRouter()
-
-// 登出：清掉 token 再改道回登录页
+// 退出：清掉token 再改道回登录页
 // 键名必须和守卫里的 localStorage.getItem('token') 完全一致
 function logout() {
   localStorage.removeItem('token')
@@ -37,43 +50,33 @@ function logout() {
 
 <style scoped>
 .admin {
-  display: flex;
   min-height: calc(100vh - 60px);
 }
 .side {
-  width: 180px;
-  padding: 20px 16px;
-  background: #F7F8FA;
-  border-right: 1px solid #E3E6EB;
+  background: #f7f8fa;
+  border-right: 1px solid #e3e6eb;
 }
 .brand {
-  margin: 0 0 16px;
+  height: 56px;
+  line-height: 56px;
+  padding: 0 20px;
   font-size: 15px;
-  color: #1F2329;
+  font-weight: 700;
+  color: #1f2329;
 }
-.side a {
-  display: block;
-  padding: 8px 10px;
-  margin-bottom: 4px;
-  color: #1F2329;
-  text-decoration: none;
-  font-size: 14px;
-  border-radius: 6px;
-}
-.side a.router-link-active {
-  color: #185FA5;
-  background: #E6F1FB;
-  font-weight: bold;
-}
-.logout {
-  width: 100%;
-  margin-top: 24px;
-  height: 34px;
-  font-size: 13px;
-  color: #C8442B;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #fff;
-  border: 1px solid #E3E6EB;
-  border-radius: 8px;
-  cursor: pointer;
+  border-bottom: 1px solid #e3e6eb;
+}
+.title {
+  font-size: 16px;
+  font-weight: 700;
+}
+.main {
+  padding: 24px;
+  background: #fff;
 }
 </style>
